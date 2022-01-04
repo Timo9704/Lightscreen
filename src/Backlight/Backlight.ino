@@ -51,14 +51,14 @@ void setup() {
   //Initialize top leds - set your default preferences here!
   ledsTop->setColor(150,255,255);
   ledsTop->setCurrentBrightness(0);
-  ledsTop->setMaxBrightness(255);
+  ledsTop->setMaxBrightness(200);
   ledsTop->setFadeTime("up", 5, 55);
   ledsTop->setFadeTime("down", 17, 0);
 
   //Initialize bottom leds - set your default preferences here!
   ledsBottom->setColor(185,0,255);
   ledsBottom->setCurrentBrightness(0);
-  ledsBottom->setMaxBrightness(255);
+  ledsBottom->setMaxBrightness(200);
   ledsBottom->setFadeTime("up", 5, 55);
   ledsBottom->setFadeTime("down", 17, 0);
 
