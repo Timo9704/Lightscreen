@@ -4,6 +4,7 @@
 //set number of used LEDs per strip in NUM_LEDS 
 #define HOUR 3600
 #define MINUTE 60
+#define NUM_LEDS 40
 
 class LedStrip : CFastLED {
   private:
@@ -12,7 +13,6 @@ class LedStrip : CFastLED {
   bool autoMode = true;
   bool on = false;
   bool off = false;
-  int NUM_LEDS;
   int upTime;
   int upTimeHour;
   int upTimeMinute;
@@ -29,11 +29,11 @@ class LedStrip : CFastLED {
   int pin;
   String identifier;
   CRGB leds[NUM_LEDS]; 
+  public:
 
   //Constructor
-  LedStrip(uint8_t pin, uint8_t NUM_LEDS, String identifier){
+  LedStrip(uint8_t pin, String identifier){
     this->pin = pin;
-    this->NUM_LEDS = NUM_LEDS;
     this->identifier = identifier;
   }
 
