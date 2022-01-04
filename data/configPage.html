@@ -102,7 +102,7 @@
         <tr>
             <td><div>
                 <label for="colorpicker">Color Picker:</label>
-                <input type="color" id="colorpicker" value="#0000ff">
+                <input type="color" id="colorpickerTop" value="#0000ff">
             </div></td>   
         </tr>
         <tr>
@@ -110,28 +110,28 @@
         </tr>
         <tr>
             <td><div>
-                <label for="appt">Lightscreen an:</label>
-                <input type="time" id="appt" name="appt">
+                <label for="timeUpTop">Lightscreen an:</label>
+                <input type="time" id="timeUpTop" name="timeUpTop">
             </div></td>  
         </tr>
         <tr>
             <td><div>
-                <label for="appt">Lightscreen aus:</label>
-                <input type="time" id="appt" name="appt">
+                <label for="timeDownTop">Lightscreen aus:</label>
+                <input type="time" id="timeDownTop" name="timeDownTop">
             </div></td>
         </tr>
         <tr>
-            <td><h2>Manuell einschalten?</h2></td>
+            <td><button onclick="saveBrightness('Top')">Speichern</button></td>
+        </tr>
+        <tr>
+            <td><h2>Streifen manuell einschalten?</h2></td>
         </tr>
         <tr>
             <td><label class="switch">
-                <input type="checkbox">
+                <input type="checkbox" id="switchTop">
                 <span class="slider round"></span>
                 </label>
             </td>
-        </tr>
-        <tr>
-            <td><button onclick="save()">Speichern</button></td>
         </tr>
     </table>
     <table style="display: inline-block;">
@@ -151,8 +151,8 @@
         </tr>
         <tr>
             <td><div>
-                <label for="colorpicker">Color Picker:</label>
-                <input type="color" id="colorpicker" value="#0000ff">
+                <label for="colorpickerBottom">Color Picker:</label>
+                <input type="color" id="colorpickerBottom" value="#0000ff">
             </div></td>   
         </tr>
         <tr>
@@ -160,40 +160,103 @@
         </tr>
         <tr>
             <td><div>
-                <label for="timeBottomUp">Lightscreen an:</label>
-                <input type="time" id="timeBottomUp" name="timeBottomUp">
+                <label for="timeUpBottom">Lightscreen an:</label>
+                <input type="time" id="timeUpBottom" name="timeUpBottom">
             </div></td>   
         </tr>
         <tr>
             <td><div>
-                <label for="timeBottomDown">Lightscreen aus:</label>
-                <input type="time" id="timeBottomDown" name="timeBottomDown">
+                <label for="timeDownBottom">Lightscreen aus:</label>
+                <input type="time" id="timeDownBottom" name="timeDownBottom">
             </div></td>
         </tr>
         <tr>
-            <td><h2>Manuell einschalten?</h2></td>
+            <td><button onclick="saveBrightness('Bottom')">Speichern</button></td>
+        </tr>
+        <tr>
+            <td><h2>Streifen manuell einschalten?</h2></td>
         </tr>
         <tr>
             <td>
                 <div>
                     <label class="switch">
-                        <input type="checkbox">
+                        <input type="checkbox" id="switchBottom">
                         <span class="slider round"></span>
                       </label>
                 </div>
             </td>
         </tr>
-        <tr>
-            <td><button onclick="saveBrightness('top')">Speichern</button></td>
-        </tr>
+        
     </table>
+    <h2>Lightscreen manuell einschalten?</h2>
+    <label class="switch">
+        <input type="checkbox" id="switchPower">
+        <span class="slider round"></span>
+    </label>
+    <h2>AutoMode aktiv?</h2>
+    <label class="switch">
+        <input type="checkbox" id="switchAutoMode">
+        <span class="slider round"></span>
+    </label>
 </center>
 </body>
 
 <script>
+    document.getElementById("switchTop").addEventListener("click", function() {
+        var url = "";
+        if(document.getElementById("switchTop").checked){
+            url = "/on?strip=top";
+        }else{
+            url = "/off?strip=top"
+        }
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("GET", url);
+        xhr.setRequestHeader("Accept", "*/*");
+        xhr.send();
+    });
+
+    document.getElementById("switchBottom").addEventListener("click", function() {
+        var url = "";
+        if(document.getElementById("switchBottom").checked){
+            url = "/on?strip=bottom";
+        }else{
+            url = "/off?strip=bottom"
+        }
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("GET", url);
+        xhr.setRequestHeader("Accept", "*/*");
+        xhr.send();
+    });
+
+    document.getElementById("switchPower").addEventListener("click", function() {
+        var url = "";
+        if(document.getElementById("switchPower").checked){
+            url = "/on?strip=both";
+        }else{
+            url = "/off?strip=both";
+        }
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("GET", url);
+        xhr.setRequestHeader("Accept", "*/*");
+        xhr.send();
+    });
+
+    document.getElementById("switchAutoMode").addEventListener("click", function() {
+        var url = "/activateAutoMode";
+    
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("GET", url);
+        xhr.setRequestHeader("Accept", "*/*");
+        xhr.send();
+    });
+
     function saveBrightness(strip) {
-        var brightness = document.getElementById("brightnessBottom").value
-        var url = "/stripBrightness?strip=" + strip + "&brightness=" + brightness;
+        var brightness = document.getElementById("brightness"+strip).value
+        var url = "/stripBrightness?strip=" + strip.toLowerCase() + "&brightness=" + brightness;
         var xhr = new XMLHttpRequest();
 
         xhr.onreadystatechange = function(){
@@ -206,15 +269,43 @@
     }
 
     function saveColor(strip) {
-        var color = document.getElementById("colorpicker").value
+        var color = document.getElementById("colorpicker"+strip).value
 
         var hs = hexToHSL(color);
 
-        var url = "/setColor?strip=" + strip + "&h=" + hs[0] + "&s=" +  hs[1];
+        var url = "/setColor?strip=" + strip.toLowerCase() + "&h=" + hs[0] + "&s=" +  hs[1];
         var xhr = new XMLHttpRequest();
 
         xhr.onreadystatechange = function(){
 
+        };
+        
+        xhr.open("GET", url);
+        xhr.setRequestHeader("Accept", "*/*");
+        xhr.send();
+    }
+
+    function saveTime(strip){
+        var upTime = document.getElementById("timeUp"+strip).value;
+        var upTimeSplit = upTime.split(":");
+
+        var url = "/setFadeTime?strip=" + strip.toLowerCase() + "&upDown=up" + "&hour=" + timeUpSplit[0] + "&minute=" + timeUpSplit[1];
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function(){
+            var downTime = document.getElementById("timeDown"+strip).value;
+            var downTimeSplit = downTime.split(":");
+
+            var url = "/setFadeTime?strip=" + strip.toLowerCase() + "&upDown=up" + "&hour=" + timeUpSplit[0] + "&minute=" + timeUpSplit[1];
+            var xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function(){
+            
+            };
+        
+            xhr.open("GET", url);
+            xhr.setRequestHeader("Accept", "*/*");
+            xhr.send();
         };
         
         xhr.open("GET", url);
