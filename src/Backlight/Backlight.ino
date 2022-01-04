@@ -10,10 +10,9 @@
 #include <ESPAsyncWebServer.h>
 #include <LedStrip.h>
 
+#define NUM_LEDS 40
 
 RtcDS3231<TwoWire> rtc(Wire);
-
-
 
 //variables for Clock over Internet
 const char* ntpServer = "pool.ntp.org";
@@ -30,12 +29,9 @@ int second = 0;
 
 long loopTime;
 
-
-
+// Constructor arg(PIN, NUM_LEDS, POSITION)
 LedStrip* ledsTop = new LedStrip(17, "top");
 LedStrip* ledsBottom = new LedStrip(16, "bottom");
-
-
 
 void setup() {
   
@@ -52,8 +48,19 @@ void setup() {
   FastLED.clear();
   FastLED.show();
 
+  //Initialize top leds - set your default preferences here!
   ledsTop->setColor(150,255,255);
+  ledsTop->setCurrentBrightness(0);
+  ledsTop->setMaxBrightness(255);
+  ledsTop->setFadeTime("up", 5, 55);
+  ledsTop->setFadeTime("down", 17, 0);
+
+  //Initialize bottom leds - set your default preferences here!
   ledsBottom->setColor(185,0,255);
+  ledsBottom->setCurrentBrightness(0);
+  ledsBottom->setMaxBrightness(255);
+  ledsBottom->setFadeTime("up", 5, 55);
+  ledsBottom->setFadeTime("down", 17, 0);
 
   ledsTop->setIntervallMillis();
   ledsBottom->setIntervallMillis();
@@ -83,17 +90,17 @@ void setup() {
   });
 
   server.on("/on", [](AsyncWebServerRequest *request) {
-    ledsTop->autoMode = 0;
-    ledsBottom->autoMode = 0;
-    ledsTop->setLedsBrightness(ledsTop->maxBrightness);
-    ledsBottom->setLedsBrightness(ledsTop->maxBrightness);
+    ledsTop->setAutoMode(0);
+    ledsBottom->setAutoMode(0);
+    ledsTop->setLedsBrightness(ledsTop->getMaxBrightness());
+    ledsBottom->setLedsBrightness(ledsTop->getMaxBrightness());
     FastLED.show();
     request->send(200, "text/html", "ON");
   });
 
   server.on("/off", [](AsyncWebServerRequest *request) {
-    ledsTop->autoMode = 0;
-    ledsBottom->autoMode = 0;
+    ledsTop->setAutoMode(0);
+    ledsBottom->setAutoMode(0);
     ledsTop->setLedsBrightness(0);
     ledsBottom->setLedsBrightness(0);
     FastLED.show();
@@ -148,9 +155,9 @@ void setup() {
     AsyncWebParameter* p3 = request->getParam(2);
 
     if ((String) p1->value() == "top"){
-      ledsTop->setColor(p2->value().toInt(), p3->value().toInt(), ledsTop->currentBrightness);
+      ledsTop->setColor(p2->value().toInt(), p3->value().toInt(), ledsTop->getCurrentBrightness());
     }else if((String) p1->value() == "bottom"){
-      ledsBottom->setColor(p2->value().toInt(), p3->value().toInt(), ledsBottom->currentBrightness);
+      ledsBottom->setColor(p2->value().toInt(), p3->value().toInt(), ledsBottom->getCurrentBrightness());
     }
     request->send(200, "text/html", "Farbe wurde gesetzt!");
   });
@@ -174,8 +181,6 @@ void loop() {
       ESP.restart();
       wifiCheck = 0;
   };
-
-  //server.handleClient();
 
   RtcDateTime now = rtc.GetDateTime();
   hour = now.Hour();

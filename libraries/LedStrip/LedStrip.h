@@ -129,6 +129,10 @@ class LedStrip : CFastLED {
     return this->currentBrightness;
   }
 
+  int getMaxBrightness(){
+    return this->maxBrightness;
+  }
+
   CRGB* getLedCRGB(){
     return this->leds;
   }
