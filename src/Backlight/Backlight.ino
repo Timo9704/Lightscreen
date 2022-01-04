@@ -134,7 +134,10 @@ void setup() {
   });
 
   server.on("/nightMode", [](AsyncWebServerRequest *request) {
-    //nightMode(server.arg(0).toInt());
+    AsyncWebParameter* p1 = request->getParam(0);
+
+    ledsTop->nightMode(p1->value().toInt());
+    ledsBottom->nightMode(p1->value().toInt());
     request->send(200, "text/html", "NightMode aktiviert!");
   });
 
