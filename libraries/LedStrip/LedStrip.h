@@ -100,7 +100,7 @@ class LedStrip : CFastLED {
     if (upDown == "up"){
       this->upTimeHour = hour;
       this->upTimeMinute = minute;
-      this->upTime = minute * HOUR + minute * MINUTE;
+      this->upTime = hour * HOUR + minute * MINUTE;
     }
     if (upDown == "down"){
       this->downTimeHour = hour;
@@ -186,8 +186,7 @@ class LedStrip : CFastLED {
     if(loopTime >= fadeCycleTime && autoMode){
       setIntervallMillis();
 
-      if(nightModeDuration > 0){
-        
+      if(nightModeDuration = 0){
         if(fadeUp){
           setLedsBrightness(getCurrentBrightness()+1);
           Serial.print(" / Up für ");
@@ -224,13 +223,13 @@ class LedStrip : CFastLED {
   }
 
   String exportAsJson(){
-    StaticJsonDocument<200> doc;
+    StaticJsonDocument<300> doc;
     doc["identifier"] = this->identifier;
     doc["autoMode"] = this->autoMode;
-    doc["upTimeHour"] = this->upTime;
-    doc["upTimeMinute"] = this->upTime;
-    doc["downTimeHour"] = this->upTime;
-    doc["downTimeMinute"] = this->upTime;
+    doc["upTimeHour"] = this->upTimeHour;
+    doc["upTimeMinute"] = this->upTimeMinute;
+    doc["downTimeHour"] = this->downTimeHour;
+    doc["downTimeMinute"] = this->downTimeMinute;
     doc["upTime"] = this->upTime;
     doc["downTime"] = this->downTime;
     doc["currentBrightness"] = this->currentBrightness;
