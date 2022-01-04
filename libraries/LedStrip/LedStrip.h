@@ -21,6 +21,7 @@ class LedStrip : CFastLED {
   int downTimeMinute;
   int currentBrightness;
   int maxBrightness;
+  int nightModeDuration = 0;
   int h = 255;
   int s = 255;
   int v = 255;
@@ -145,13 +146,14 @@ class LedStrip : CFastLED {
   void nightMode(int dauer) {
     for (int i = 0; i < NUM_LEDS; i++) {
       if ((i % 2) == 0) {
-        CHSV color = CHSV(h, s, 100);
+        CHSV color = CHSV(h, s, (int) maxBrightness/3);
         fill_solid(leds, NUM_LEDS, color);
       } else {
         CHSV color = CHSV(h, s, 0);
         fill_solid(leds, NUM_LEDS, color);
       }
     }
+    nightModeDuration = dauer * 60000 + intervallMillis;
   }
 
   /**
@@ -183,32 +185,40 @@ class LedStrip : CFastLED {
 
     if(loopTime >= fadeCycleTime && autoMode){
       setIntervallMillis();
-      if(fadeUp){
-        setLedsBrightness(getCurrentBrightness()+1);
-        Serial.print(" / Up für ");
-        Serial.println(identifier);
-        if(this->currentBrightness == maxBrightness){
-          fadeUp = false;
+
+      if(nightModeDuration > 0){
+        
+        if(fadeUp){
+          setLedsBrightness(getCurrentBrightness()+1);
+          Serial.print(" / Up für ");
+          Serial.println(identifier);
+          if(this->currentBrightness == maxBrightness){
+            fadeUp = false;
+          }
         }
-      }
-      if(fadeDown){
-        setLedsBrightness(getCurrentBrightness()-1);
-        Serial.print(" / Down für ");
-        Serial.println(identifier);
-        if(this->currentBrightness == 0){
-          fadeDown = false;
+        if(fadeDown){
+          setLedsBrightness(getCurrentBrightness()-1);
+          Serial.print(" / Down für ");
+          Serial.println(identifier);
+          if(this->currentBrightness == 0){
+            fadeDown = false;
+          }
         }
-      }
-      if(on){
-        setCurrentBrightness(this->maxBrightness);
-        setLedsBrightness(this->maxBrightness);
-        Serial.println(" ON ");
-        Serial.println(identifier);
-      }
-      if(off){
-        setLedsBrightness(0);
-        Serial.println(" OFF ");
-        Serial.println(identifier);
+        if(on){
+          setCurrentBrightness(this->maxBrightness);
+          setLedsBrightness(this->maxBrightness);
+          Serial.println(" ON ");
+          Serial.println(identifier);
+        }
+        if(off){
+          setLedsBrightness(0);
+          Serial.println(" OFF ");
+          Serial.println(identifier);
+        }
+      }else{
+        if(nightModeDuration <= intervallMillis){
+          nightModeDuration = 0;
+        }
       }
     }
   }
@@ -225,6 +235,7 @@ class LedStrip : CFastLED {
     doc["downTime"] = this->downTime;
     doc["currentBrightness"] = this->currentBrightness;
     doc["maxBrightness"] = this->maxBrightness;
+    doc["nightModeDuration"] = this->nightModeDuration;
     doc["h"] = this->h;
     doc["s"] = this->s;
     doc["v"] = this->v;
