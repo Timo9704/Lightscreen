@@ -147,10 +147,10 @@ class LedStrip : CFastLED {
     for (int i = 0; i < NUM_LEDS; i++) {
       if ((i % 2) == 0) {
         CHSV color = CHSV(h, s, (int) maxBrightness/3);
-        fill_solid(leds, NUM_LEDS, color);
+        leds[i] = color;
       } else {
         CHSV color = CHSV(h, s, 0);
-        fill_solid(leds, NUM_LEDS, color);
+        leds[i] = color;
       }
     }
     nightModeDuration = dauer * 60000 + intervallMillis;
