@@ -90,21 +90,51 @@ void setup() {
   });
 
   server.on("/on", [](AsyncWebServerRequest *request) {
-    ledsTop->setAutoMode(0);
-    ledsBottom->setAutoMode(0);
-    ledsTop->setLedsBrightness(ledsTop->getMaxBrightness());
-    ledsBottom->setLedsBrightness(ledsTop->getMaxBrightness());
+    AsyncWebParameter* p1 = request->getParam(0);
+    
+    if(p1->value() == "both"){
+      ledsTop->setAutoMode(0);
+      ledsBottom->setAutoMode(0);
+      ledsTop->setLedsBrightness(ledsTop->getMaxBrightness());
+      ledsBottom->setLedsBrightness(ledsTop->getMaxBrightness());
+    }
+    if(p1->value() == "top"){
+      ledsTop->setAutoMode(0);
+      ledsTop->setLedsBrightness(ledsTop->getMaxBrightness());
+    }
+    if(p1->value() == "bottom"){
+      ledsBottom->setAutoMode(0);
+      ledsBottom->setLedsBrightness(ledsTop->getMaxBrightness());
+    }
     FastLED.show();
     request->send(200, "text/html", "ON");
   });
 
   server.on("/off", [](AsyncWebServerRequest *request) {
-    ledsTop->setAutoMode(0);
-    ledsBottom->setAutoMode(0);
-    ledsTop->setLedsBrightness(0);
-    ledsBottom->setLedsBrightness(0);
+    AsyncWebParameter* p1 = request->getParam(0);
+
+    if(p1->value() == "both"){
+      ledsTop->setAutoMode(0);
+      ledsBottom->setAutoMode(0);
+      ledsTop->setLedsBrightness(0);
+      ledsBottom->setLedsBrightness(0);
+    }
+    if(p1->value() == "top"){
+      ledsTop->setAutoMode(0);
+      ledsTop->setLedsBrightness(0);
+    }
+    if(p1->value() == "bottom"){
+      ledsBottom->setAutoMode(0);
+      ledsBottom->setLedsBrightness(0);
+    }
     FastLED.show();
     request->send(200, "text/html", "OFF");
+  });
+
+  server.on("/activateAutoMode", [](AsyncWebServerRequest *request) {
+    ledsTop->setAutoMode(1);
+    ledsBottom->setAutoMode(1);
+    request->send(200, "text/html", "AutoMode on");
   });
 
   server.on("/setFadeTime", [](AsyncWebServerRequest *request) {
