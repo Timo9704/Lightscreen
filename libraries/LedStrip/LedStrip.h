@@ -186,7 +186,7 @@ class LedStrip : CFastLED {
     if(loopTime >= fadeCycleTime && autoMode){
       setIntervallMillis();
 
-      if(nightModeDuration = 0){
+      if(nightModeDuration == 0){
         if(fadeUp){
           setLedsBrightness(getCurrentBrightness()+1);
           Serial.print(" / Up für ");
