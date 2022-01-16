@@ -71,7 +71,7 @@ class LedStrip : CFastLED {
   * Set currentBrightness, which holds the leds brightness between 0 and 255
   */
   int setCurrentBrightness(int brightness){
-    if(brightness <=255 && brightness >= 0){
+    if(brightness <=maxBrightness && brightness >= 0){
       this->currentBrightness = brightness;
     }
   }
@@ -84,6 +84,10 @@ class LedStrip : CFastLED {
     Serial.print(getCurrentBrightness());
     Serial.print(" / NewBrightness: ");
     Serial.print(newBrightness);
+    
+    if(newBrightness > maxBrightness){
+     newBrightness = maxBrightness;
+    }
 
     CHSV color = CHSV(h, s, newBrightness);
 
