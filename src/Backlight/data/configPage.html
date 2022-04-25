@@ -81,7 +81,7 @@
     </style>
 </head>
 
-<body>
+<body onload="getInformation()">
     <center>
     <h1>Lightscreen Einstellungen</h1>
     <table style="display: inline-block;">
@@ -202,6 +202,38 @@
 </body>
 
 <script>
+    function getInformation(){
+        var url = "/getInformation"
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var responseJson = JSON.parse(xhr.response.replace('"ledStrips":',''));
+
+                document.getElementById("switchAutoMode").setAttribute("checked", responseJson[0].autoMode);
+                if(responseJson[0].on || responseJson[1].on){
+                    document.getElementById("switchPower").setAttribute("checked", true);
+                }
+
+                document.getElementById("brightnessTop").setAttribute("value", responseJson[0].currentBrightness);
+                document.getElementById("timeUpTop").setAttribute("value", "0"+ responseJson[0].upTimeHour+":"+ responseJson[0].upTimeMinute);
+                document.getElementById("timeDownTop").setAttribute("value", responseJson[0].downTimeHour+":"+  responseJson[0].downTimeMinute);
+                document.getElementById("switchTop").setAttribute("checked", responseJson[0].on);
+
+                document.getElementById("brightnessBottom").setAttribute("value", responseJson[1].currentBrightness);
+                document.getElementById("timeUpBottom").setAttribute("value", "0"+ responseJson[1].upTimeHour+":"+ responseJson[1].upTimeMinute);
+                document.getElementById("timeDownBottom").setAttribute("value", responseJson[1].downTimeHour+":"+ responseJson[1].downTimeMinute);
+                document.getElementById("switchBottom").setAttribute("checked", responseJson[1].on);
+               
+            }
+        };
+
+        xhr.open("GET", url);
+        xhr.setRequestHeader("Accept", "*/*");
+        xhr.send();
+        
+    }
+
     document.getElementById("switchTop").addEventListener("click", function() {
         var url = "";
         if(document.getElementById("switchTop").checked){

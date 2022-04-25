@@ -239,6 +239,7 @@ class LedStrip : CFastLED {
     doc["currentBrightness"] = this->currentBrightness;
     doc["maxBrightness"] = this->maxBrightness;
     doc["nightModeDuration"] = this->nightModeDuration;
+    doc["on"] = this->on;
     doc["h"] = this->h;
     doc["s"] = this->s;
     doc["v"] = this->v;
