@@ -124,7 +124,7 @@
             <td><button onclick="saveBrightness('Top')">Speichern</button></td>
         </tr>
         <tr>
-            <td><h2>Streifen manuell einschalten?</h2></td>
+            <td><h2>Streifen manuell schalten?</h2></td>
         </tr>
         <tr>
             <td><label class="switch">
@@ -174,7 +174,7 @@
             <td><button onclick="saveBrightness('Bottom')">Speichern</button></td>
         </tr>
         <tr>
-            <td><h2>Streifen manuell einschalten?</h2></td>
+            <td><h2>Streifen manuell schalten?</h2></td>
         </tr>
         <tr>
             <td>
@@ -188,7 +188,7 @@
         </tr>
         
     </table>
-    <h2>Lightscreen manuell einschalten?</h2>
+    <h2>Lightscreen manuell schalten?</h2>
     <label class="switch">
         <input type="checkbox" id="switchPower">
         <span class="slider round"></span>
@@ -202,6 +202,12 @@
 </body>
 
 <script>
+    function padLeadingZeros(num, size) {
+        var s = num + "";
+        while (s.length < size) s = "0" + s;
+        return s;
+    }
+
     function getInformation(){
         var url = "/getInformation"
         var xhr = new XMLHttpRequest();
@@ -216,15 +222,16 @@
                 }
 
                 document.getElementById("brightnessTop").setAttribute("value", responseJson[0].currentBrightness);
-                document.getElementById("timeUpTop").setAttribute("value", "0"+ responseJson[0].upTimeHour+":"+ responseJson[0].upTimeMinute);
-                document.getElementById("timeDownTop").setAttribute("value", responseJson[0].downTimeHour+":"+  responseJson[0].downTimeMinute);
+                document.getElementById("timeUpTop").setAttribute("value", padLeadingZeros(responseJson[0].upTimeHour, 2) + ":" + padLeadingZeros(responseJson[0].upTimeMinute, 2));
+                document.getElementById("timeDownTop").setAttribute("value", padLeadingZeros(responseJson[0].downTimeHour, 2) + ":" +  padLeadingZeros(responseJson[0].downTimeMinute, 2));
                 document.getElementById("switchTop").setAttribute("checked", responseJson[0].on);
+                document.getElementById("colorpickerTop").setAttribute("value", rgbToHex(responseJson[0].r, responseJson[0].g, responseJson[0].b));
 
                 document.getElementById("brightnessBottom").setAttribute("value", responseJson[1].currentBrightness);
-                document.getElementById("timeUpBottom").setAttribute("value", "0"+ responseJson[1].upTimeHour+":"+ responseJson[1].upTimeMinute);
-                document.getElementById("timeDownBottom").setAttribute("value", responseJson[1].downTimeHour+":"+ responseJson[1].downTimeMinute);
+                document.getElementById("timeUpBottom").setAttribute("value", padLeadingZeros(responseJson[1].upTimeHour, 2) + ":" + padLeadingZeros(responseJson[1].upTimeMinute, 2));
+                document.getElementById("timeDownBottom").setAttribute("value", padLeadingZeros(responseJson[1].downTimeHour, 2) + ":" + padLeadingZeros(responseJson[1].downTimeMinute, 2));
                 document.getElementById("switchBottom").setAttribute("checked", responseJson[1].on);
-               
+                document.getElementById("colorpickerBottom").setAttribute("value", rgbToHex(responseJson[1].r, responseJson[1].g, responseJson[1].b));
             }
         };
 
@@ -232,6 +239,10 @@
         xhr.setRequestHeader("Accept", "*/*");
         xhr.send();
         
+    }
+
+    function rgbToHex(r, g, b) {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
 
     document.getElementById("switchTop").addEventListener("click", function() {
