@@ -62,11 +62,14 @@ void setup() {
   ledsBottom->setFadeTime("up", 5, 55);
   ledsBottom->setFadeTime("down", 17, 0);
 
+  FastLED.clear();
+  FastLED.show();
+
   ledsTop->setIntervallMillis();
   ledsBottom->setIntervallMillis();
 
   WiFi.mode(WIFI_STA);
-  WiFi.begin("SSID", "Passwort");
+  WiFi.begin("ConnectionPoint", "Bluebirdvonschmitz");
   Serial.println("Verbindung wird hergestellt");
   while (WiFi.status() != WL_CONNECTED) {
     delay(5000);
@@ -85,7 +88,7 @@ void setup() {
 
   server.on("/setClock", [](AsyncWebServerRequest *request) {
     request->send(200, "text/html", printLocalTime());
-    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+    //configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
     printLocalTime();
   });
 
